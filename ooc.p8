@@ -49,7 +49,7 @@ m = 0
 -- map sprite flag
 f = 0
 
-function actor_i_at_point(x,y)
+function actor_i_at_cell(x,y)
   for i,a in ipairs(actors) do
     if a.x == x and a.y == y then
       return i
@@ -58,7 +58,7 @@ function actor_i_at_point(x,y)
   return nil
 end
 
-function actor_at_point(x,y)
+function actor_at_cell(x,y)
   for i,a in ipairs(actors) do
     if a.x == x and a.y == y then
       return a
@@ -113,7 +113,7 @@ function get_input()
 
 
     if btnp(🅾️) then
-      local i = actor_i_at_point(ctrl.x, ctrl.y)
+      local i = actor_i_at_cell(ctrl.x, ctrl.y)
       if i then
         set_ctrl(i)
       else
@@ -235,7 +235,7 @@ function _draw()
       print("ctrl x: "..ctrl.x)
       print("ctrl y: "..ctrl.y)
 
-      local a = actor_at_point(ctrl.x, ctrl.y)
+      local a = actor_at_cell(ctrl.x, ctrl.y)
       if a then
         print(a.name)
       end
