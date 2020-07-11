@@ -168,24 +168,25 @@ function load_map(i)
   -- load map based on index
   gs.map = i
 
-for i=0,16 do
-  for j=0,16 do
-    local current_cell = mget(i,j)
-    local current_flag = fget(current_cell)
+  for i=0,16 do
+    for j=0,16 do
+      local current_cell = mget(i,j)
+      local current_flag = fget(current_cell)
 
-    if current_flag == 2 then
-      add(actors, {
-            s=96,
-            name="sheep",
-            music="a",
-            x=i,
-            y=j,
-      })
-    end
+      if current_flag == 2 then
+        add(actors, {
+              s=96,
+              name="sheep",
+              music="a",
+              x=i,
+              y=j,
+        })
+      end
 
-    if current_flag == 4 then
-      -- fail()
-      set_ctrl(0, i, j)
+      if current_flag == 4 then
+        -- fail()
+        set_ctrl(0, i, j)
+      end
     end
   end
 end
