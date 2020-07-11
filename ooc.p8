@@ -110,21 +110,21 @@ end
 
 function get_input()
   if ctrl.out then
-    if btnp(0) then ctrl.x -= 1 end
-    if btnp(1) then ctrl.x += 1 end
-    if btnp(2) then ctrl.y -= 1 end
-    if btnp(3) then ctrl.y += 1 end
+    if btnp(⬅️) then ctrl.x -= 1 end
+    if btnp(➡️) then ctrl.x += 1 end
+    if btnp(⬆️) then ctrl.y -= 1 end
+    if btnp(⬇️) then ctrl.y += 1 end
 
-    if btnp(0) or
-      btnp(1) or
-      btnp(2) or
-      btnp(3) then
+    if btnp(⬅️) or
+      btnp(➡️) or
+      btnp(⬆️) or
+      btnp(⬇️) then
 
       sfx(snd["blip"])
     end
 
 
-    if btnp(4) then
+    if btnp(⬇️) then
       local i = actor_i_at_point(ctrl.x, ctrl.y)
       if i then
         set_ctrl(i)
@@ -132,19 +132,19 @@ function get_input()
         sfx(snd["nope"])
       end
     end
-    if btnp(5) then
+    if btnp(🅾️) then
       set_ctrl(ctrl.target)
     end
   else
     local last_x = actors[ctrl.target].x
     local last_y = actors[ctrl.target].y
 
-    if btnp(0) then actors[ctrl.target].x -= 1 end
-    if btnp(1) then actors[ctrl.target].x += 1 end
-    if btnp(2) then actors[ctrl.target].y -= 1 end
-    if btnp(3) then actors[ctrl.target].y += 1 end
+    if btnp(⬅️) then actors[ctrl.target].x -= 1 end
+    if btnp(➡️) then actors[ctrl.target].x += 1 end
+    if btnp(⬆️) then actors[ctrl.target].y -= 1 end
+    if btnp(⬇️) then actors[ctrl.target].y += 1 end
 
-    if btnp(4) then
+    if btnp(🅾️) then
       ctrl.out = true
       ctrl.x = actors[ctrl.target].x
       ctrl.y = actors[ctrl.target].y
