@@ -10,6 +10,7 @@ ctrl = {
 
 -- todo: dynamically populate this table with each actor in a scene, clear it when leaving scenes
 actors = {}
+box = 5
 
 -- player
 -- todo: change from p1 to table full of actors
@@ -42,12 +43,37 @@ add(actors, a)
 add(actors, b)
 add(actors, c)
 
+levels = {}
+
+levels[1] = {x=0,y=0,soffx=0,soffy=0,widx=16,widy=16}
+
 -- time
 t = 0
 
 -- game state
 gs = {}
-gs.map = 0
+gs.map = {}
+
+--player spawn
+gs.map.actors = {}
+gs.map.actors.x = 0
+gs.map.actors.y = 0
+
+--list of boxes in the level
+gs.map.boxes = {}
+gs.map.boxes_init = {} --for reset
+
+--x/y on the map
+gs.map.x = 0
+gs.map.y = 0
+
+--offset value to center the map
+gs.map.soffx = 0
+gs.map.soffy = 0
+
+--level map width
+gs.map.widx = 0
+gs.map.widy = 0
 
 -- game mode
 -- 0: title
@@ -80,6 +106,65 @@ m = 0
 
 -- map sprite flag
 f = 0
+
+function level_loader(lvl)
+  local x,y,curr_tile,box_sprite,map_x,map_y
+	local box_count = 1
+    --reset the crate/target arrays
+	gs.map.crates={}
+	gs.map.crates_init={}
+	gs.map.targets={}	
+	gs.map.x = levels[lvl].x
+	gs.map.y = levels[lvl].y
+	gs.map.soffx = levels[lvl].soffx
+	gs.map.soffy = levels[lvl].soffy
+	gs.map.widx = levels[lvl].widx
+	gs.map.widy = levels[lvl].widy
+    --map scan
+    for x=gs.map.x*8+gs.map.soffx,((gs.map.x*8)+gs.map.widx*8)+gs.map.soffx,8 do
+		  for y=gs.map.y*8+gs.map.soffy,((gs.map.y*8)+gs.map.widy*8)+gs.map.soffy,8 do 
+        local sx, sy
+        sx = x-(gs.map.x*8)
+			  sy = y-(gs.map.y*8)
+			  curr_tile=get_map_pos(sx,sy)
+			  curr_tile_flag=fget(curr_tile)
+			  map_x=to_map_val(x,"x")
+			  map_y=to_map_val(y,"y")
+        --spawn
+        if(curr_tile_flag==8)then
+          gs.map.actors.x = sx
+          gs.map.actors.y = sy
+        end
+      end
+    end
+  --set player pos to spawn pos
+  actors.x = gs.map.actors.x
+  actors.y = gs.map.actors.y  
+end
+
+function draw_crates(o)
+	local m_x=to_map_val(o.x,"x")
+	local m_y=to_map_val(o.y,"y")
+	local cell=get_map_pos(o.x,o.y)
+	mset(m_x,m_y,o.org_spr)
+	--draw a rect on crate if on target
+	if(fget(o.last_tile)==127)then
+		rect(o.x-(gs.map.x*8),o.y-(gs.map.y*8),(o.x+7)-(gs.map.x*8),(o.y+7)-(gs.map.y*8),crt_col)
+	end
+end
+
+--get map position
+function get_map_pos(x,y)
+	return mget(flr((x-gs.map.soffx)/8)+gs.map.x,flr((y-gs.map.soffy)/8)+gs.map.y)
+end
+
+function to_map_val(val,axis)
+	if(axis=="x")then
+		return flr((val-gs.map.soffx)/8)
+	elseif(axis=="y")then
+		return flr((val-gs.map.soffy)/8)
+	end
+end
 
 function actor_i_at_point(x,y)
   for i,a in ipairs(actors) do
@@ -198,17 +283,21 @@ function update_actors()
 end
 
 function _init()
-  load_map(0)
+  --load_map(0)
+  level_loader(1)
   set_ctrl(1)
 end
 
 function _draw()
   cls()
-  map(0, 0, 0, 0, 16, 16)
+  map(gs.map.x, gs.map.y, gs.map.soffx, gs.map.soffy, gs.map.widx, gs.map.widy)
+  
+  foreach(gs.map.boxes,draw_boxes)
+
   -- spr(p1.s, p1.x * 8, p1.y * 8)
 
-  for i,a in ipairs(actors) do
-    spr(a.s, a.x * 8, a.y * 8)
+  for i,a in ipairs(gs.map.actors) do
+    spr(a.s, gs.map.actors.x * 8, gs.map.actors.y* 8)
   end
 
   if ctrl.out then
