@@ -207,7 +207,7 @@ for i=0,16 do
     if current_flag == 2 then
       add(actors, {
             s=96,
-            name="a",
+            name="sheep",
             music="a",
             x=i,
             y=j,
