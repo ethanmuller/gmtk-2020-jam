@@ -8,38 +8,7 @@ ctrl = {
   out = false,
 }
 
--- todo: dynamically populate this table with each actor in a scene, clear it when leaving scenes
 actors = {}
-
--- player
--- todo: change from p1 to table full of actors
-a = {
-  s=96,
-  name="a",
-  music="a",
-  x=3,
-  y=3,
-}
--- sprite
-
-b = {
-  s=96,
-  name="b",
-  music="b",
-}
-
-c = {
-  s=96,
-  name="c",
-  music="c",
-}
-
-d = {
-  s=96,
-  name="d",
-  music="d",
-}
-
 
 -- time
 t = 0
@@ -221,23 +190,18 @@ for i=0,16 do
   end
 end
 
-
-  -- todo: spawn actors based on spawn tiles
-  -- for each row in map
-    -- for each column in map
-    -- look for sheep
-      -- add sheep to actors table
-      -- replace sheep on map with grass
--- actors[1].x = 2
--- actors[1].y = 2
+function move_actor(a)
+  -- a.x += 1
 end
 
 function update_actors()
+  for i,a in ipairs(actors) do
+    move_actor(a)
+  end
 end
 
 function _init()
   load_map(0)
-  -- set_ctrl(1)
 end
 
 function _draw()
