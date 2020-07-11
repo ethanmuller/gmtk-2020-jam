@@ -132,9 +132,6 @@ function get_input()
         sfx(snd["nope"])
       end
     end
-    if btnp(🅾️) then
-      set_ctrl(ctrl.target)
-    end
   else
     local last_x = actors[ctrl.target].x
     local last_y = actors[ctrl.target].y
