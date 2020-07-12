@@ -518,25 +518,19 @@ function update_all_animals()
 end
 
 function should_door_open()
-  local count_sheep = 0
   for i,a in ipairs(actors) do
-    local animal_in_pit = fget(mget(a.x + position_x, a.y + position_y)) == 128
-    if animal_in_pit then
-      count_sheep += 1
+    local animal_in_pit = fget(mget(a.x, a.y)) == 128
+    if not animal_in_pit then
+      return false
     end
   end
-  return count_sheep
+  return true
 end
 
 function update_door()
   local door_was_open = gs.door_open
 
-
-  if(should_door_open() == levels[gs.map].required) then
-    gs.door_open = true
-  else
-    gs.door_open = false
-  end
+  gs.door_open = should_door_open()
 
   local door_did_change = (gs.door_open ~= door_was_open) and not (door_was_open == nil)
 
