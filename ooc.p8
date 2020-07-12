@@ -310,6 +310,12 @@ function update_all_animals()
   end
 end
 
+function update_gameplay()
+  get_input()
+  update_all_animals()
+  t += 1
+end
+
 function _init()
   load_map(0)
 end
@@ -368,11 +374,8 @@ function _draw()
 end
 
 function _update60()
-  get_input()
-  update_all_animals()
-  t += 1
+  update_gameplay()
 end
-
 __gfx__
 00000000555555551111111111111111bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb33333bbb22222bbb88888bbbdddddbb
 00000000555555551111111111111111bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb3bb3bb3b2000002b8000008bd11111db
