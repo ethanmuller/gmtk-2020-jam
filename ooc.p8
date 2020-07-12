@@ -77,6 +77,7 @@ gs.map = 0
 -- 2: gameplay won stage
 -- 3: ???
 gs.mode = 1
+
 function actor_i_at_cell(x,y)
   for i,a in ipairs(actors) do
     if a.x == x and a.y == y then
@@ -147,7 +148,6 @@ function move_animal(a, x, y)
   local map_sprite = mget(target_x, target_y)
   local map_flag = fget(map_sprite)
 
-
   local actor_in_cell = actor_at_cell(target_x, target_y)
   local item_in_cell = item_at_cell(target_x, target_y)
 
@@ -179,7 +179,6 @@ function move_animal(a, x, y)
       return false
     end
   end
-  -- if player move item...
   -- if player move item...
   if item_in_cell then
     if item_in_cell.s == library["rock"].s then
@@ -224,7 +223,7 @@ function move_item(item, x, y)
   local target_x = item.x + (x or 0)
   local target_y = item.y + (y or 0)
 
-  local map_sprite = mget(target_x, target_y)
+  local map_sprite = mget(target_x,target_y)
   local map_flag = fget(map_sprite)
 
   local actor_in_cell = actor_at_cell(target_x, target_y)
@@ -259,6 +258,10 @@ function move_item(item, x, y)
 
   sfx(snd["push"])
   return true
+end
+
+function next_stage()
+  gs.map+=1
 end
 
 function win_stage()
@@ -303,7 +306,8 @@ function get_input()
     local item = item_at_cell(ctrl.x, ctrl.y)
 
     if item and item.name == "door" and gs.door_open then
-      win_stage()
+      next_stage()
+      -- win_stage()
     end
     
   else
@@ -327,6 +331,29 @@ function get_input()
   
 end
 
+levels = {
+  [0] = {
+    x=0,
+    y=0,
+  },
+  [1] = {
+    x=16,
+    y=0
+  },
+  [2] = {
+    x=32,
+    y=0,
+  },
+  [3] = {
+    x=48,
+    y=0
+  },
+  [4] = {
+    x=64,
+    y=0
+  }
+}
+
 function load_map(i)
   -- clear out all actors
   actors = {}
@@ -335,14 +362,21 @@ function load_map(i)
   -- load map based on index
   gs.map = i
 
-  for i=0,16 do
-    for j=0,16 do
+  position_x = levels[gs.map].x
+  position_y = levels[gs.map].y
+
+
+  for i=position_x,position_x + 16 do
+    for j=position_y,position_y + 16 do
+      local screen_x = i - position_x
+      local screen_y = j - position_y
+
       local current_cell = mget(i,j)
             
       if current_cell == library["sheep"].s then
         local s = clone_table(library["sheep"])
-        s.x = i
-        s.y = j
+        s.x = screen_x
+        s.y = screen_y
         s.time_at_last_move=t
 
         add(actors, s)
@@ -353,8 +387,8 @@ function load_map(i)
              
       if current_cell == library["chicken"].s then
         local s = clone_table(library["chicken"])
-        s.x = i
-        s.y = j
+        s.x = screen_x
+        s.y = screen_y
         s.time_at_last_move=t
 
         add(actors, s)
@@ -366,8 +400,8 @@ function load_map(i)
              
       if current_cell == library["cow"].s then
         local s = clone_table(library["cow"])
-        s.x = i
-        s.y = j
+        s.x = screen_x
+        s.y = screen_y
         s.time_at_last_move=t
 
         add(actors, s)
@@ -378,19 +412,8 @@ function load_map(i)
 
       if current_cell == library["rock"].s then
         local r = clone_table(library["rock"])
-        r.x = i
-        r.y = j
-
-        add(items, r)
-
-        -- remove from map
-        mset(i, j, library["grass"].s)
-      end
-
-      if current_cell == library["rock"].s then
-        local r = clone_table(library["rock"])
-        r.x = i
-        r.y = j
+        r.x = screen_x
+        r.y = screen_y
 
         add(items, r)
 
@@ -400,7 +423,7 @@ function load_map(i)
       
       if current_cell == library["demon"].s then
         -- put demon here
-        set_ctrl(0, i, j)
+        set_ctrl(0, screen_x, screen_y)
 
         -- remove from map
         mset(i, j, library["grass"].s)
@@ -408,8 +431,8 @@ function load_map(i)
 
       if current_cell == library["door"].s then
         local r = clone_table(library["door"])
-        r.x = i
-        r.y = j
+        r.x = screen_x
+        r.y = screen_y
 
         add(items, r)
 
@@ -449,7 +472,7 @@ end
 
 function should_door_open()
   for i,a in ipairs(actors) do
-    local animal_in_pit = fget(mget(a.x, a.y)) == 128
+    local animal_in_pit = fget(mget(a.x + position_x, a.y + position_y)) == 128
     if not animal_in_pit then
       return false
     end
@@ -491,7 +514,7 @@ function draw_gameplay()
   cls()
   palt(0, true)
   palt(11, false)
-  map(0, 0, 0, 0, 16, 16)
+  map(position_x, position_y, 0, 0, 16, 16)
   -- spr(p1.s, p1.x * 8, p1.y * 8)
 
   palt(0, false)
@@ -530,7 +553,7 @@ function draw_gameplay()
   print("❎ reset", 92, 119)
 
   if dbg then
-    color(8)
+    color(7)
 
     -- print("time: "..t)
     print("num actors: "..#actors)
@@ -551,6 +574,7 @@ end
 
 function draw_gameplay_won_stage()
   cls()
+
 end
 
 function _init()
