@@ -114,15 +114,33 @@ function move_animal(a, x, y)
   local item_in_cell = item_at_cell(target_x, target_y)
 
   -- if wall is solid...
-  if map_flag == 1 or actor_in_cell then
+  if map_flag == 1 then
     -- prevent movement
     target_x = a.x
     target_y = a.y
     -- oof
     sfx(snd["thump"])
+    return false
   end
-
   
+  if actor_in_cell then
+    if actor_in_cell.s == library["chicken"].s then
+      local dx = target_x - a.x
+      local dy = target_y - a.y
+      local move = move_animal(actor_in_cell, dx, dy)
+      if (move==false) then
+        target_x = a.x
+        target_y = a.y
+      end
+    else
+      -- prevent movement
+      target_x = a.x
+      target_y = a.y
+      -- oof
+      sfx(snd["thump"])
+      return false
+    end
+  end
   -- if player move item...
   if item_in_cell then
     if item_in_cell.s == library["rock"].s then
@@ -131,6 +149,7 @@ function move_animal(a, x, y)
         target_y = a.y
 
         sfx(snd["thump"])
+        return false
       else
         if(a.controlled == true or a.s == library["cow"].s) then
           local dx = target_x - a.x
@@ -152,6 +171,8 @@ function move_animal(a, x, y)
     a.y = target_y
     sfx(snd["step"])
   end
+
+  return true
 end
 
 function move_item(item, x, y)
@@ -175,7 +196,7 @@ function move_item(item, x, y)
 
     return false
   end
-    if actor_in_cell then
+  if actor_in_cell then
     -- prevent movement
     target_x = item.x
     target_y = item.y
