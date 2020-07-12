@@ -64,6 +64,35 @@ tunes = {
 }
 
 
+levels = {
+  [0] = {
+    x=0,
+    y=0,
+    title="title 1"
+  },
+  [1] = {
+    x=16,
+    y=0,
+    title="title 2"
+  },
+  [2] = {
+    x=32,
+    y=0,
+    title="title 3"
+  },
+  [3] = {
+    x=48,
+    y=0,
+    title="title 3"
+  },
+  [4] = {
+    x=64,
+    y=0,
+    title="title 4"
+  }
+}
+
+
 -- time
 t = 0
 
@@ -263,16 +292,21 @@ function move_item(item, x, y)
   return true
 end
 
-function next_stage()
+function won_stage()
+  gs.mode = 2
   gs.map+=1
-  load_map(gs.map)
+  ctrl.out = false
+  music(-1)
   sfx(snd["chime"])
 end
 
-function win_stage()
-  gs.mode = 2
-  ctrl.out = false
-  sfx(snd["chime"])
+function get_won_input()
+  if btnp(🅾️) then
+    gs.mode = 1
+    load_map(gs.map)
+    
+    sfx(snd["chime"])
+  end
 end
 
 function get_input()
@@ -282,6 +316,7 @@ function get_input()
 
     load_map(gs.map)
   end
+
 
   if ctrl.out then
     -- ghost movement
@@ -311,8 +346,8 @@ function get_input()
     local item = item_at_cell(ctrl.x, ctrl.y)
 
     if item and item.name == "door" and gs.door_open then
-      next_stage()
-      -- win_stage()
+      -- next_stage()
+      won_stage()
     end
     
   else
@@ -335,29 +370,6 @@ function get_input()
   end
   
 end
-
-levels = {
-  [0] = {
-    x=0,
-    y=0,
-  },
-  [1] = {
-    x=16,
-    y=0
-  },
-  [2] = {
-    x=32,
-    y=0,
-  },
-  [3] = {
-    x=48,
-    y=0
-  },
-  [4] = {
-    x=64,
-    y=0
-  }
-}
 
 function load_map(i)
   -- clear out all actors
@@ -512,6 +524,7 @@ function update_gameplay()
 end
 
 function update_gameplay_won_stage()
+  get_won_input()
   t += 1
 end
 
@@ -557,6 +570,13 @@ function draw_gameplay()
   end
   print("❎ reset", 92, 119)
 
+  color(0)
+  rectfill(3,3,20,10)
+
+  color(7)
+  print("level", 6, 6)
+
+
   if dbg then
     color(7)
 
@@ -577,9 +597,14 @@ function draw_gameplay()
   end
 end
 
-function draw_gameplay_won_stage()
-  cls()
+function string_center(s)
+  return 64-#s*2
+end
 
+function draw_gameplay_won_stage()
+  cls(11)
+  local title = levels[gs.map].title
+  print(title,string_center(title),61,3)
 end
 
 function _init()
