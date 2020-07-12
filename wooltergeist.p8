@@ -195,7 +195,10 @@ function set_ctrl(i, x, y)
       actors[ctrl.target].controlled = false
     end
 
-    sfx(snd["out_of_control"])
+    -- prevent this from happening on stage load
+    if t > 1 then
+      sfx(snd["out_of_control"])
+    end
 
     if not gs.door_open then
       music(tunes["ambient"])
@@ -325,20 +328,13 @@ function move_item(item, x, y)
 end
 
 function won_stage()
+  t = 0
+
   gs.mode = 2
   gs.map+=1
   ctrl.out = false
   music(-1)
-  sfx(snd["chime"])
-end
-
-function get_won_input()
-  if btnp(🅾️) then
-    gs.mode = 1
-    load_map(gs.map)
-    
-    sfx(snd["chime"])
-  end
+  -- sfx(snd["chime"])
 end
 
 function get_gameplay_input()
@@ -404,6 +400,7 @@ function get_gameplay_input()
 end
 
 function load_map(i)
+  t = 0
   -- clear out all actors
   actors = {}
   items = {}
@@ -522,7 +519,7 @@ end
 function get_num_sheep_in_pit()
   local num = 0
   for i,a in ipairs(actors) do
-    local animal_in_pit = fget(mget(a.x, a.y)) == 128
+    local animal_in_pit = fget(mget(a.x + position_x, a.y + position_y)) == 128
     if animal_in_pit then
       num += 1
     end
@@ -546,8 +543,11 @@ function update_door()
       sfx(snd["thunder"], 3)
       music(tunes["door_open"])
     else
-      sfx(snd["nope"])
-      music(-1)
+      -- prevent this from happening on stage load
+      if t > 1 then
+        sfx(snd["nope"])
+        music(-1)
+      end
     end
   end
   
@@ -561,8 +561,12 @@ function update_gameplay()
 end
 
 function update_won_stage()
-  get_won_input()
   t += 1
+
+  if t > 100 then
+    gs.mode = 1
+    load_map(gs.map)
+  end
 end
 
 function draw_gameplay()
@@ -644,6 +648,7 @@ end
 
 function draw_won_stage()
   cls(11)
+
   local title = levels[gs.map].title
   print(title,string_center(title),61,3)
   if dbg then
