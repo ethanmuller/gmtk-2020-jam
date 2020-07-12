@@ -613,6 +613,10 @@ function draw_gameplay()
   if a and ctrl.out then
     print("z/\142 possess", 4, 119)
   end
+  if not ctrl.out then
+    print("z/\142 out", 4, 119)
+  end
+  
   print("❎ reset", 92, 119)
 
   if dbg then
