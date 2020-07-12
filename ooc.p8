@@ -522,6 +522,13 @@ function draw_gameplay()
     spr(48, ctrl.x * 8, ctrl.y * 8 + sin(t/60)*1.25)
   end
 
+  color(3)
+  local a = actor_at_cell(ctrl.x, ctrl.y)
+  if a and ctrl.out then
+    print("\142 possess", 4, 119)
+  end
+  print("❎ reset", 92, 119)
+
   if dbg then
     color(8)
 
