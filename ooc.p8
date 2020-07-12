@@ -517,14 +517,6 @@ function update_all_animals()
   end
 end
 
-function update_red_gate()
-  local a = actors[ctrl.target]
-
-  -- if (fget(mget(a.x + position_x, a.y + position_y)) == 8) then
-    
-  -- end
-end
-
 function should_door_open()
   local count_sheep = 0
   for i,a in ipairs(actors) do
@@ -564,7 +556,6 @@ function update_gameplay()
   get_input()
   update_all_animals()
   update_door()
-  update_red_gate()
   t += 1
 end
 
