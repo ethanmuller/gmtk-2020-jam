@@ -37,9 +37,9 @@ library = {
     s=182,
     name="grass",
   },
-  gate = {
+  door = {
     s=12,
-    name="gate",
+    name="door",
   }
 }
 
@@ -60,7 +60,7 @@ snd = {
 tunes = {
   ambient=0,
   sheep_theme=1,
-  gate_open=6,
+  door_open=6,
 }
 
 
@@ -115,7 +115,7 @@ function set_ctrl(i, x, y)
 
     sfx(snd["in_control"])
 
-    if not gs.gate_open then
+    if not gs.door_open then
       music(tunes[a.music])
     end
     
@@ -132,7 +132,7 @@ function set_ctrl(i, x, y)
 
     sfx(snd["out_of_control"])
 
-    if not gs.gate_open then
+    if not gs.door_open then
       music(tunes["ambient"])
     end
   end
@@ -302,7 +302,7 @@ function get_input()
     -- check for win
     local item = item_at_cell(ctrl.x, ctrl.y)
 
-    if item and item.name == "gate" and gs.gate_open then
+    if item and item.name == "door" and gs.door_open then
       win_stage()
     end
     
@@ -406,8 +406,8 @@ function load_map(i)
         mset(i, j, library["grass"].s)
       end
 
-      if current_cell == library["gate"].s then
-        local r = clone_table(library["gate"])
+      if current_cell == library["door"].s then
+        local r = clone_table(library["door"])
         r.x = i
         r.y = j
 
@@ -447,7 +447,7 @@ function update_all_animals()
   end
 end
 
-function should_gate_open()
+function should_door_open()
   for i,a in ipairs(actors) do
     local animal_in_pit = fget(mget(a.x, a.y)) == 128
     if not animal_in_pit then
@@ -457,17 +457,17 @@ function should_gate_open()
   return true
 end
 
-function update_gate()
-  local gate_was_open = gs.gate_open
+function update_door()
+  local door_was_open = gs.door_open
 
-  gs.gate_open = should_gate_open()
+  gs.door_open = should_door_open()
 
-  local gate_did_change = (gs.gate_open ~= gate_was_open) and not (gate_was_open == nil)
+  local door_did_change = (gs.door_open ~= door_was_open) and not (door_was_open == nil)
 
-  if gate_did_change then
-    if gs.gate_open then
+  if door_did_change then
+    if gs.door_open then
       sfx(snd["thunder"], 3)
-      music(tunes["gate_open"])
+      music(tunes["door_open"])
     else
       sfx(snd["nope"])
       music(-1)
@@ -479,7 +479,7 @@ end
 function update_gameplay()
   get_input()
   update_all_animals()
-  update_gate()
+  update_door()
   t += 1
 end
 
@@ -498,9 +498,9 @@ function draw_gameplay()
   palt(11, true)
 
   for i,item in ipairs(items) do
-    if item.name == "gate" then
+    if item.name == "door" then
       local offset = 0
-      if gs.gate_open then
+      if gs.door_open then
         offset = 1
         offset += (t/4) % 3
       end
@@ -535,7 +535,7 @@ function draw_gameplay()
     -- print("time: "..t)
     print("num actors: "..#actors)
     print("num items: "..#items)
-    print("gate_open:"..tostring(gs.gate_open))
+    print("door_open:"..tostring(gs.door_open))
     -- print("mget: "..asdf)
     if ctrl.out then
       print("ctrl x: "..ctrl.x)
