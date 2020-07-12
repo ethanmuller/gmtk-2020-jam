@@ -145,7 +145,7 @@ function move_animal(a, x, y)
   local target_x = a.x + (x or 0)
   local target_y = a.y + (y or 0)
 
-  local map_sprite = mget(target_x, target_y)
+  local map_sprite = mget(target_x + position_x, target_y + position_y)
   local map_flag = fget(map_sprite)
 
   local actor_in_cell = actor_at_cell(target_x, target_y)
@@ -179,7 +179,7 @@ function move_animal(a, x, y)
       return false
     end
   end
-  -- if player move item...
+  -- player with item...
   if item_in_cell then
     if item_in_cell.s == library["rock"].s then
       if(a.s == library["chicken"].s) then
@@ -205,6 +205,9 @@ function move_animal(a, x, y)
           return false
         end
       end
+      -- if item_in_cell.s == library["door"].s then
+      --   next_stage()
+      -- end
     end
   end
 
@@ -223,7 +226,7 @@ function move_item(item, x, y)
   local target_x = item.x + (x or 0)
   local target_y = item.y + (y or 0)
 
-  local map_sprite = mget(target_x,target_y)
+  local map_sprite = mget(target_x + position_x,target_y + position_y)
   local map_flag = fget(map_sprite)
 
   local actor_in_cell = actor_at_cell(target_x, target_y)
@@ -262,6 +265,8 @@ end
 
 function next_stage()
   gs.map+=1
+  load_map(gs.map)
+  sfx(snd["chime"])
 end
 
 function win_stage()
