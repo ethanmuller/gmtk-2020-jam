@@ -65,30 +65,35 @@ tunes = {
 
 
 levels = {
-  [0] = {
+   [0] = {
     x=0,
     y=0,
-    title="title 1"
+    title="title 1",
+    required=1,
   },
-  [1] = {
+  [1] ={
     x=16,
     y=0,
-    title="title 2"
+    title="title 2",
+    required=1,
   },
-  [2] = {
+  [2] ={
     x=32,
     y=0,
-    title="title 3"
+    title="title 3",
+    required=1,
   },
   [3] = {
     x=48,
     y=0,
-    title="title 3"
+    title="title 4",
+    required=1,
   },
   [4] = {
     x=64,
     y=0,
-    title="title 4"
+    title="title 5",
+    required=1,
   }
 }
 
@@ -488,19 +493,27 @@ function update_all_animals()
 end
 
 function should_door_open()
+  local count_sheep = 0
   for i,a in ipairs(actors) do
     local animal_in_pit = fget(mget(a.x + position_x, a.y + position_y)) == 128
-    if not animal_in_pit then
-      return false
+    if animal_in_pit then
+      count_sheep += 1
     end
   end
-  return true
+  return count_sheep
 end
 
 function update_door()
   local door_was_open = gs.door_open
 
-  gs.door_open = should_door_open()
+
+  if(should_door_open() == levels[gs.map].required) then
+    gs.door_open = true
+  else
+    gs.door_open = false
+  end
+
+  -- gs.door_open = should_door_open()
 
   local door_did_change = (gs.door_open ~= door_was_open) and not (door_was_open == nil)
 
@@ -570,12 +583,12 @@ function draw_gameplay()
   end
   print("❎ reset", 92, 119)
 
+  
 
   if dbg then
-    color(7)
-
+    color(8)
     -- print("time: "..t)
-    print("num actors: "..#actors)
+    print("num actors: "..#actors,0,0)
     print("num items: "..#items)
     print("door_open:"..tostring(gs.door_open))
     -- print("mget: "..asdf)
