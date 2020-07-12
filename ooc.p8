@@ -570,12 +570,6 @@ function draw_gameplay()
   end
   print("❎ reset", 92, 119)
 
-  color(0)
-  rectfill(3,3,20,10)
-
-  color(7)
-  print("level", 6, 6)
-
 
   if dbg then
     color(7)
