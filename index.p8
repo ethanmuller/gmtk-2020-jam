@@ -85,6 +85,7 @@ t = 0
 -- game state
 gs = {}
 gs.map = 1
+gs.map = #levels
 
 -- game mode
 -- 0: title
@@ -622,6 +623,12 @@ function draw_end()
     color(t/4)
     center_print("you beat the game")
   else
+    color(11)
+     print("thank you for playing\n")
+    color(7)
+     print("made by\nethan muller +\nbrian wo +\nmeidie lo\n\nin 48 hours\nfor #gmtk2020\n")
+    color(1)
+     print("press z to restart")
     -- draw art
   end
   
