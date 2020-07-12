@@ -180,7 +180,8 @@ function move_animal(a, x, y)
   end
   
   if actor_in_cell then
-    if actor_in_cell.name == "sheep" and false then
+    if actor_in_cell.name == "sheep" and not actor_in_cell.controlled then
+      -- 
       local dx = target_x - a.x
       local dy = target_y - a.y
       local move = move_animal(actor_in_cell, dx, dy)
