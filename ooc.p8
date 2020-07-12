@@ -362,15 +362,6 @@ function _draw()
       end
     end
   end
-
-  local px = 1
-  local py = 121
-
-    if ctrl.out then
-      print("out of control", px, py, 1)
-    else
-      print("controlling: "..actors[ctrl.target].name, px, py, 7)
-    end
 end
 
 function _update60()
