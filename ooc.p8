@@ -317,7 +317,7 @@ function update_gameplay()
 end
 
 function _init()
-  load_map(0)
+  load_map(gs.map)
 end
 
 function _draw()
