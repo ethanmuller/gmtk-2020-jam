@@ -70,12 +70,12 @@ levels = {
   [0] = {
     x=0,
     y=0,
-    title="cold open",
+    message="cold open",
   },
   [1] = {
     x=16,
     y=0,
-    title="go time",
+    message="wooltergeist",
   },
 }
 
@@ -609,9 +609,9 @@ end
 function draw_won_stage()
   cls(0)
 
-  local title = levels[gs.map].title
+  local message = levels[gs.map].message
   color(7)
-  center_print(title)
+  center_print(message)
 end
 
 function draw_end()
